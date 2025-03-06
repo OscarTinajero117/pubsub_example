@@ -1,0 +1,53 @@
+<.header>
+  Listing Bancos
+  <:actions>
+    <.link patch={~p"/bancos/new"}>
+      <.button>New Banco</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="collection"
+  rows={@streams.collection}
+  row_click={fn {_id, banco} -> JS.navigate(~p"/bancos/#{banco}") end}
+>
+  <:col :let={{_id, banco}} label="Descripcion">{banco.descripcion}</:col>
+  <:col :let={{_id, banco}} label="Clabe">{banco.clabe}</:col>
+  <:action :let={{_id, banco}}>
+    <div class="sr-only">
+      <.link style={banco.cant_open && "pointer-events: none;"} navigate={~p"/bancos/#{banco}"}>
+        Show
+      </.link>
+    </div>
+    <.link style={banco.cant_open && "pointer-events: none;"} patch={~p"/bancos/#{banco}/edit"}>
+      Edit
+    </.link>
+  </:action>
+  <:action :let={{id, banco}}>
+    <.link
+      style={banco.cant_open && "pointer-events: none;"}
+      phx-click={JS.push("delete", value: %{id: banco.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="banco-modal"
+  show
+  on_cancel={JS.patch(~p"/bancos")}
+>
+  <.live_component
+    module={PubsubExampleWeb.BancoLive.FormComponent}
+    id={@banco.id || :new}
+    title={@page_title}
+    action={@live_action}
+    banco={@banco}
+    current_user={@current_user}
+    patch={~p"/bancos"}
+  />
+</.modal>
