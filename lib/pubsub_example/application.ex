@@ -20,7 +20,7 @@ defmodule PubsubExample.Application do
       # {PubsubExample.Worker, arg},
       # Start to serve requests, typically the last entry
       PubsubExampleWeb.Endpoint,
-      PubsubExample.Catalogos.Notifier
+      PubsubExample.NotifierPSQL
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
